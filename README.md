@@ -1,7 +1,5 @@
 # Rimi Riga Marathon Elite Showcase 2026
 
-Cloudflare Pages-ready Vite + React app for showcasing elite athletes from a live GitHub CSV.
-
 ## New in this version
 
 - Clickable athlete cards and table rows
