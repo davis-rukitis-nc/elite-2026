@@ -296,8 +296,9 @@ function AthleteModal({ athlete, onClose }: { athlete: Athlete; onClose: () => v
 
         {(athlete.profileUrl || athlete.sourceUrl || athlete.instagram) && (
           <div className="profile-links">
-            {athlete.profileUrl && <a href={athlete.profileUrl} target="_blank" rel="noreferrer">Profile</a>}
-            {athlete.sourceUrl && <a href={athlete.sourceUrl} target="_blank" rel="noreferrer">Source</a>}
+            {(athlete.profileUrl || athlete.sourceUrl) && (
+              <a href={athlete.profileUrl || athlete.sourceUrl} target="_blank" rel="noreferrer">World Athletics profile</a>
+            )}
             {athlete.instagram && <a href={athlete.instagram} target="_blank" rel="noreferrer">Instagram</a>}
           </div>
         )}
@@ -328,7 +329,7 @@ function App() {
   const [distance, setDistance] = useState("All distances");
   const [gender, setGender] = useState("All");
   const [country, setCountry] = useState("All countries");
-  const [sort, setSort] = useState("BIB");
+  const [sort, setSort] = useState("Best PB");
   const [selected, setSelected] = useState<Athlete | null>(null);
 
   const loadData = async () => {
@@ -378,8 +379,8 @@ function App() {
     <>
       <header className="standalone-bar">
         <a href="https://rimirigamarathon.com/" target="_blank" rel="noreferrer" aria-label="Open Rimi Riga Marathon">
+          <span className="top-arrow" aria-hidden="true">←</span>
           <LogoMark />
-          <span className="top-arrow" aria-hidden="true">↗</span>
         </a>
       </header>
 
@@ -394,7 +395,7 @@ function App() {
             <CustomSelect label="Distance" value={distance} options={distances} onChange={setDistance} />
             <CustomSelect label="Gender" value={gender} options={["All", "Men", "Women"]} onChange={setGender} />
             <CustomSelect label="Country" value={country} options={countries} onChange={setCountry} />
-            <CustomSelect label="Sort" value={sort} options={["BIB", "Best PB", "Name", "Country", "Distance"]} onChange={setSort} />
+            <CustomSelect label="Sort" value={sort} options={["Best PB", "BIB", "Name", "Country", "Distance"]} onChange={setSort} />
           </div>
         </section>
 

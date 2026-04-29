@@ -1,5 +1,17 @@
 @import url("https://use.typekit.net/irp7ivx.css");
 
+@font-face {
+  font-family: "loew-variable";
+  src: url("https://use.typekit.net/af/e20438/0000000000000000774f3b43/30/l?primer=f592e0a4b9356877842506ce344308576437e4f677d7c9b78ca2162e6cad991a&fvd=n1&v=3") format("woff2"),
+       url("https://use.typekit.net/af/e20438/0000000000000000774f3b43/30/d?primer=f592e0a4b9356877842506ce344308576437e4f677d7c9b78ca2162e6cad991a&fvd=n1&v=3") format("woff"),
+       url("https://use.typekit.net/af/e20438/0000000000000000774f3b43/30/a?primer=f592e0a4b9356877842506ce344308576437e4f677d7c9b78ca2162e6cad991a&fvd=n1&v=3") format("opentype");
+  font-display: auto;
+  font-style: normal;
+  font-weight: 100;
+  font-stretch: normal;
+}
+
+
 :root {
   --rrm-red: #cc2328;
   --rrm-purple: #59344e;
@@ -11,8 +23,14 @@
   --rrm-line: rgba(89, 52, 78, 0.14);
   --rrm-muted: rgba(89, 52, 78, 0.68);
   --rrm-card: #ffffff;
+  --rrm-font-family: "loew-variable", sans-serif;
+  --rrm-font-regular: "ital" 0, "wght" 520, "wdth" 100;
+  --rrm-font-medium: "ital" 0, "wght" 620, "wdth" 100;
+  --rrm-font-bold: "ital" 0, "wght" 740, "wdth" 100;
   color: var(--rrm-purple);
-  font-family: "loew-variable", sans-serif;
+  font-family: var(--rrm-font-family);
+  font-weight: 100;
+  font-variation-settings: var(--rrm-font-regular);
   background: transparent;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -34,12 +52,17 @@ body,
 
 body {
   overflow-x: hidden;
+  font-family: var(--rrm-font-family);
+  font-weight: 100;
+  font-variation-settings: var(--rrm-font-regular);
 }
 
 button,
 input {
   font: inherit;
-  font-family: "loew-variable", sans-serif;
+  font-family: var(--rrm-font-family);
+  font-weight: 100;
+  font-variation-settings: var(--rrm-font-regular);
 }
 
 button {
@@ -48,6 +71,19 @@ button {
 
 a {
   color: inherit;
+}
+
+strong,
+th,
+.pb-time,
+.name-cell,
+.mobile-athlete-line h3,
+.mobile-pb-box strong,
+.profile-head h2,
+.profile-grid strong,
+.profile-kicker {
+  font-weight: 100;
+  font-variation-settings: var(--rrm-font-bold);
 }
 
 .standalone-bar {
@@ -77,12 +113,7 @@ html.is-standalone .standalone-bar {
   align-items: center;
 }
 
-.rrm-logo-img {
-  display: block;
-  width: 108px;
-  height: auto;
-}
-
+.rrm-logo-img,
 .rrm-logo-svg {
   display: block;
   width: 108px;
@@ -91,7 +122,6 @@ html.is-standalone .standalone-bar {
 
 .top-arrow,
 .back-arrow {
-  order: -1;
   display: inline-flex;
   width: 30px;
   height: 30px;
@@ -104,6 +134,7 @@ html.is-standalone .standalone-bar {
   color: #ffffff;
   font-size: 19px;
   line-height: 1;
+  transform: translateY(1px);
 }
 
 .app {
@@ -168,6 +199,7 @@ html.is-standalone .standalone-bar {
   color: var(--rrm-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  font-variation-settings: var(--rrm-font-medium);
 }
 
 .select-button {
@@ -223,6 +255,7 @@ html.is-standalone .standalone-bar {
   border: 0;
   border-radius: 10px;
   background: transparent;
+  color: var(--rrm-purple);
   text-align: left;
   cursor: pointer;
 }
@@ -230,6 +263,10 @@ html.is-standalone .standalone-bar {
 .select-item:hover,
 .select-item.active {
   background: rgba(242, 223, 182, 0.32);
+}
+
+.select-item.active {
+  font-variation-settings: var(--rrm-font-bold);
 }
 
 .list-head {
@@ -247,6 +284,7 @@ html.is-standalone .standalone-bar {
   background: transparent;
   color: var(--rrm-red);
   cursor: pointer;
+  font-variation-settings: var(--rrm-font-medium);
 }
 
 .error {
@@ -297,6 +335,7 @@ html.is-standalone .standalone-bar {
   color: rgba(255, 255, 255, 0.78);
   font-size: 12px;
   letter-spacing: 0.03em;
+  font-variation-settings: var(--rrm-font-medium);
 }
 
 .elite-table .pb-head {
@@ -323,12 +362,7 @@ html.is-standalone .standalone-bar {
 }
 
 .name-cell {
-  font-weight: 500;
   color: var(--rrm-purple);
-}
-
-.pb-time {
-  font-weight: 600;
 }
 
 .distance-pill,
@@ -343,6 +377,7 @@ html.is-standalone .standalone-bar {
   font-size: 13px;
   line-height: 1;
   white-space: nowrap;
+  font-variation-settings: var(--rrm-font-medium);
 }
 
 .distance-red {
@@ -403,6 +438,7 @@ html.is-standalone .standalone-bar {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  font-variation-settings: var(--rrm-font-medium);
 }
 
 .mobile-athlete-line {
@@ -424,7 +460,7 @@ html.is-standalone .standalone-bar {
   background: rgba(242, 223, 182, 0.45);
   color: var(--rrm-red);
   font-size: 13px;
-  font-weight: 600;
+  font-variation-settings: var(--rrm-font-bold);
 }
 
 .avatar.image {
@@ -436,7 +472,6 @@ html.is-standalone .standalone-bar {
   color: var(--rrm-purple);
   font-size: 20px;
   line-height: 1.12;
-  font-weight: 500;
 }
 
 .mobile-athlete-line p {
@@ -461,13 +496,13 @@ html.is-standalone .standalone-bar {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  font-variation-settings: var(--rrm-font-medium);
 }
 
 .mobile-pb-box strong {
   color: var(--rrm-purple);
   font-size: 20px;
   line-height: 1;
-  font-weight: 600;
 }
 
 .mobile-pb-box small {
@@ -481,6 +516,7 @@ html.is-standalone .standalone-bar {
   margin-top: 12px;
   color: var(--rrm-red);
   font-size: 13px;
+  font-variation-settings: var(--rrm-font-medium);
 }
 
 .empty {
@@ -553,7 +589,6 @@ html.is-standalone .standalone-bar {
   color: var(--rrm-purple);
   font-size: clamp(24px, 4vw, 38px);
   line-height: 1.05;
-  font-weight: 500;
 }
 
 .profile-country {
@@ -583,11 +618,11 @@ html.is-standalone .standalone-bar {
   font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  font-variation-settings: var(--rrm-font-medium);
 }
 
 .profile-grid strong {
   color: var(--rrm-purple);
-  font-weight: 500;
 }
 
 .profile-copy {
@@ -605,6 +640,7 @@ html.is-standalone .standalone-bar {
 
 .highlight {
   color: var(--rrm-red);
+  font-variation-settings: var(--rrm-font-medium);
 }
 
 .tags,
@@ -622,6 +658,7 @@ html.is-standalone .standalone-bar {
   color: #ffffff;
   font-size: 13px;
   text-decoration: none;
+  font-variation-settings: var(--rrm-font-medium);
 }
 
 @media (max-width: 840px) {
