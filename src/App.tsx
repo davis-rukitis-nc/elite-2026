@@ -32,7 +32,7 @@ const CSV_URL =
 const countryCodeMap: Record<string, string> = {
   Ethiopia: "ETH", Kenya: "KEN", Tanzania: "TAN", Uganda: "UGA", Germany: "GER", Eritrea: "ERI",
   Latvia: "LAT", Lithuania: "LTU", Estonia: "EST", Finland: "FIN", Sweden: "SWE", Norway: "NOR",
-  Denmark: "DEN", Poland: "POL", Ukraine: "UKR", Morocco: "MAR", Rwanda: "RWA", Burundi: "BDI",
+  Denmark: "DEN", Poland: "POL", Ukraine: "UKR", Morocco: "MAR", Rwanda: "RWA", Burundi: "BDI", "South Africa": "RSA",
   France: "FRA", Spain: "ESP", Italy: "ITA", Portugal: "POR", "United Kingdom": "GBR",
   USA: "USA", "United States": "USA"
 };
@@ -41,7 +41,7 @@ const flagEmoji = (code: string) => {
   const normalized = code.trim().toUpperCase();
   const isoMap: Record<string, string> = {
     ETH: "ET", KEN: "KE", TAN: "TZ", UGA: "UG", GER: "DE", ERI: "ER", LAT: "LV", LTU: "LT",
-    EST: "EE", FIN: "FI", SWE: "SE", NOR: "NO", DEN: "DK", POL: "PL", UKR: "UA", MAR: "MA",
+    EST: "EE", FIN: "FI", SWE: "SE", NOR: "NO", DEN: "DK", POL: "PL", UKR: "UA", MAR: "MA", RSA: "ZA",
     RWA: "RW", BDI: "BI", FRA: "FR", ESP: "ES", ITA: "IT", POR: "PT", GBR: "GB", USA: "US"
   };
   const iso = isoMap[normalized] || normalized.slice(0, 2);
@@ -309,15 +309,13 @@ function AthleteModal({ athlete, onClose }: { athlete: Athlete; onClose: () => v
 
 function LogoMark() {
   return (
-    
-<img
-  className="rrm-logo-img"
-  src="/logo.svg"
-  alt="Rimi Riga Marathon"
-  loading="eager"
-  decoding="async"
-/>
-
+    <img
+      className="rrm-logo-img"
+      src="/logo.svg"
+      alt="Rimi Riga Marathon"
+      loading="eager"
+      decoding="async"
+    />
   );
 }
 
