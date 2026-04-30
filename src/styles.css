@@ -152,11 +152,11 @@ html.is-standalone .standalone-bar {
 }
 .select-label {
   display: block;
-  margin: 0;
+  margin: 4px 0 0;
   padding: 8px 0;
   color: var(--rrm-muted);
   font-size: 11px;
-  line-height: 1;
+  line-height: 1.1;
   text-align: left;
   text-transform: uppercase;
   letter-spacing: 0.055em;
@@ -166,7 +166,6 @@ html.is-standalone .standalone-bar {
   display: block;
   max-width: 100%;
   margin: 0 0 8px;
-  padding-bottom: 6px;
   overflow: hidden;
   color: var(--rrm-purple);
   font-size: 15px;
