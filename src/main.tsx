@@ -10,14 +10,16 @@ type Athlete = {
   name: string;
   country: string;
   countryCode: string;
-  year: string;
+  birthYear: string;
   birthDate: string;
   gender: string;
   distance: string;
   distanceColorClass: string;
   pb: string;
   pbSeconds: number;
-  event: string;
+  pbEvent: string;
+  pbYear: string;
+  category: string;
   highlight: string;
   instagram: string;
   bio: string;
@@ -27,9 +29,94 @@ type Athlete = {
 };
 
 type Option = { value: string; label: string };
-type SortKey = "pb" | "name" | "country" | "bib";
+type SortKey = "distance_pb" | "pb" | "name" | "country" | "category" | "bib";
+type Lang = "en" | "lv";
 
 const GITHUB_CSV_URL = "https://raw.githubusercontent.com/davis-rukitis-nc/elite-2026/refs/heads/main/public/elite.csv";
+const RRM_LOGO_URL = "https://rimirigamarathon.com/wp-content/uploads/2024/01/rrm-logo-white.svg";
+
+const TEXT: Record<Lang, Record<string, string>> = {
+  en: {
+    search: "Search athlete, country, PB…",
+    distance: "Distance",
+    gender: "Gender",
+    country: "Country",
+    category: "Field",
+    sort: "Sort",
+    allDistances: "All distances",
+    allGenders: "All",
+    allCountries: "All countries",
+    allCategories: "All fields",
+    distancePb: "Distance + PB",
+    fastestPb: "Fastest PB",
+    name: "Name",
+    loading: "Loading athletes…",
+    showing: "Showing",
+    of: "of",
+    athletes: "athletes",
+    refresh: "Refresh data",
+    athlete: "Athlete",
+    pb: "Personal best",
+    race: "Race",
+    profile: "Profile",
+    tap: "Tap to view profile →",
+    viewProfile: "View profile →",
+    pbEvent: "PB event",
+    pbYear: "PB year",
+    dateOfBirth: "Date of birth",
+    birthYear: "Birth year",
+    field: "Field",
+    tags: "Tags",
+    worldAthletics: "World Athletics profile",
+    instagram: "Instagram",
+    closeProfile: "Close profile",
+    noMatches: "No athletes match the selected filters.",
+    men: "Men",
+    women: "Women",
+    born: "Born",
+    bib: "BIB"
+  },
+  lv: {
+    search: "Meklē sportistu, valsti, rekordu…",
+    distance: "Distance",
+    gender: "Dzimums",
+    country: "Valsts",
+    category: "Sastāvs",
+    sort: "Kārtot",
+    allDistances: "Visas distances",
+    allGenders: "Visi",
+    allCountries: "Visas valstis",
+    allCategories: "Visi sastāvi",
+    distancePb: "Distance + rekords",
+    fastestPb: "Ātrākais rekords",
+    name: "Vārds",
+    loading: "Ielādē sportistus…",
+    showing: "Rāda",
+    of: "no",
+    athletes: "sportistiem",
+    refresh: "Atjaunot datus",
+    athlete: "Sportists",
+    pb: "Personiskais rekords",
+    race: "Starts",
+    profile: "Profils",
+    tap: "Spied, lai skatītu profilu →",
+    viewProfile: "Skatīt profilu →",
+    pbEvent: "Rekorda sacensības",
+    pbYear: "Rekorda gads",
+    dateOfBirth: "Dzimšanas datums",
+    birthYear: "Dzimšanas gads",
+    field: "Sastāvs",
+    tags: "Tegi",
+    worldAthletics: "World Athletics profils",
+    instagram: "Instagram",
+    closeProfile: "Aizvērt profilu",
+    noMatches: "Neviens sportists neatbilst izvēlētajiem filtriem.",
+    men: "Vīrieši",
+    women: "Sievietes",
+    born: "Dz. gads",
+    bib: "BIB"
+  }
+};
 
 const IOC_TO_ISO2: Record<string, string> = {
   AFG:"AF",ALB:"AL",ALG:"DZ",AND:"AD",ANG:"AO",ANT:"AG",ARG:"AR",ARM:"AM",ARU:"AW",ASA:"AS",AUS:"AU",AUT:"AT",AZE:"AZ",
@@ -48,18 +135,16 @@ const IOC_TO_ISO2: Record<string, string> = {
 };
 
 const COUNTRY_TO_ISO2: Record<string, string> = {
-  "afghanistan":"AF","albania":"AL","algeria":"DZ","andorra":"AD","angola":"AO","argentina":"AR","armenia":"AM","australia":"AU","austria":"AT","azerbaijan":"AZ",
-  "bahamas":"BS","bahrain":"BH","bangladesh":"BD","barbados":"BB","belarus":"BY","belgium":"BE","belize":"BZ","benin":"BJ","bhutan":"BT","bolivia":"BO","bosnia and herzegovina":"BA","botswana":"BW","brazil":"BR","bulgaria":"BG","burkina faso":"BF","burundi":"BI",
-  "cambodia":"KH","cameroon":"CM","canada":"CA","cape verde":"CV","central african republic":"CF","chad":"TD","chile":"CL","china":"CN","colombia":"CO","comoros":"KM","congo":"CG","costa rica":"CR","croatia":"HR","cuba":"CU","cyprus":"CY","czech republic":"CZ","czechia":"CZ",
-  "denmark":"DK","djibouti":"DJ","dominica":"DM","dominican republic":"DO","dr congo":"CD","ecuador":"EC","egypt":"EG","el salvador":"SV","eritrea":"ER","estonia":"EE","eswatini":"SZ","ethiopia":"ET",
-  "fiji":"FJ","finland":"FI","france":"FR","gabon":"GA","gambia":"GM","georgia":"GE","germany":"DE","ghana":"GH","great britain":"GB","greece":"GR","grenada":"GD","guatemala":"GT","guinea":"GN","guinea-bissau":"GW","guyana":"GY",
-  "haiti":"HT","honduras":"HN","hong kong":"HK","hungary":"HU","iceland":"IS","india":"IN","indonesia":"ID","iran":"IR","iraq":"IQ","ireland":"IE","israel":"IL","italy":"IT",
-  "jamaica":"JM","japan":"JP","jordan":"JO","kazakhstan":"KZ","kenya":"KE","kosovo":"XK","kuwait":"KW","kyrgyzstan":"KG","latvia":"LV","lebanon":"LB","lesotho":"LS","liberia":"LR","libya":"LY","liechtenstein":"LI","lithuania":"LT","luxembourg":"LU",
-  "madagascar":"MG","malawi":"MW","malaysia":"MY","maldives":"MV","mali":"ML","malta":"MT","mauritania":"MR","mauritius":"MU","mexico":"MX","moldova":"MD","monaco":"MC","mongolia":"MN","montenegro":"ME","morocco":"MA","mozambique":"MZ","myanmar":"MM",
-  "namibia":"NA","nepal":"NP","netherlands":"NL","new zealand":"NZ","nicaragua":"NI","niger":"NE","nigeria":"NG","north macedonia":"MK","norway":"NO","oman":"OM","pakistan":"PK","panama":"PA","paraguay":"PY","peru":"PE","philippines":"PH","poland":"PL","portugal":"PT","qatar":"QA",
-  "romania":"RO","rwanda":"RW","saudi arabia":"SA","senegal":"SN","serbia":"RS","seychelles":"SC","sierra leone":"SL","singapore":"SG","slovakia":"SK","slovenia":"SI","somalia":"SO","south africa":"ZA","south sudan":"SS","spain":"ES","sri lanka":"LK","sudan":"SD","sweden":"SE","switzerland":"CH","syria":"SY",
-  "taiwan":"TW","tanzania":"TZ","thailand":"TH","togo":"TG","trinidad and tobago":"TT","tunisia":"TN","turkey":"TR","uganda":"UG","ukraine":"UA","united arab emirates":"AE","united kingdom":"GB","united states":"US","usa":"US","uruguay":"UY","uzbekistan":"UZ","venezuela":"VE","vietnam":"VN","yemen":"YE","zambia":"ZM","zimbabwe":"ZW"
+  "belgium":"BE","beļģija":"BE","ethiopia":"ET","etiopija":"ET","germany":"DE","vācija":"DE","israel":"IL","izraēla":"IL","japan":"JP","japāna":"JP","kenya":"KE","kenija":"KE","latvia":"LV","latvija":"LV","mexico":"MX","meksika":"MX","slovenia":"SI","slovēnija":"SI","south africa":"ZA","dienvidāfrikas republika":"ZA","tanzania":"TZ","tanzānija":"TZ","uganda":"UG","ugandā":"UG"
 };
+
+function useLang(): Lang {
+  return window.location.pathname.toLowerCase().startsWith("/lv") ? "lv" : "en";
+}
+
+function tFactory(lang: Lang) {
+  return (key: string) => TEXT[lang][key] || TEXT.en[key] || key;
+}
 
 function flagEmoji(countryCode: string, country = "") {
   const raw = (countryCode || "").trim().toUpperCase();
@@ -83,8 +168,9 @@ function pick(row: Record<string, string>, keys: string[]) {
 }
 
 function parseTimeToSeconds(value: string) {
-  if (!value) return Number.POSITIVE_INFINITY;
-  const parts = value.split(":").map((part) => Number(part.trim()));
+  if (!value || /debut|debija/i.test(value)) return Number.POSITIVE_INFINITY;
+  const clean = value.replace(/^[*\s]+/, "").trim();
+  const parts = clean.split(":").map((part) => Number(part.trim().replace(",", ".")));
   if (parts.some(Number.isNaN)) return Number.POSITIVE_INFINITY;
   if (parts.length === 2) return parts[0] * 60 + parts[1];
   if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
@@ -100,31 +186,44 @@ function distanceColorClass(distance: string) {
   return "distance-purple";
 }
 
+function distanceOrder(distance: string) {
+  const value = normalizeDistance(distance);
+  const order: Record<string, number> = { "21KM": 1, "42KM": 2, "10KM": 3, "6KM": 4, "MILE": 5 };
+  return order[value] || 99;
+}
+
 function normalizeDistance(distance: string) {
   const value = distance.trim().toUpperCase().replace(/\s+/g, "");
-  if (value === "42KM" || value === "42K" || value === "MARATHON") return "42KM";
-  if (value === "21KM" || value === "21K" || value === "HALFMARATHON") return "21KM";
-  if (value === "10KM" || value === "10K") return "10KM";
-  if (value === "6KM" || value === "6K") return "6KM";
-  if (value === "MILE" || value === "1609M") return "MILE";
+  if (["42KM", "42K", "MARATHON"].includes(value)) return "42KM";
+  if (["21KM", "21K", "HALFMARATHON", "PUSMARATONS"].includes(value)) return "21KM";
+  if (["10KM", "10K"].includes(value)) return "10KM";
+  if (["6KM", "6K", "5.7KM"].includes(value)) return "6KM";
+  if (["MILE", "1609M", "DPDMILE", "DPDJUDZE", "DPDJŪDZE"].includes(value)) return "MILE";
   return distance || "—";
 }
 
 function normalizeGender(gender: string) {
   const value = gender.trim().toUpperCase();
-  if (["M", "MALE", "MEN"].includes(value)) return "M";
-  if (["W", "F", "FEMALE", "WOMEN"].includes(value)) return "W";
+  if (["M", "MALE", "MEN", "VĪRIEŠI", "VIRIESI"].includes(value)) return "M";
+  if (["W", "F", "FEMALE", "WOMEN", "SIEVIETES"].includes(value)) return "W";
   return gender || "—";
 }
 
-function genderLabel(gender: string) {
-  if (gender === "M") return "Men";
-  if (gender === "W") return "Women";
+function genderLabel(gender: string, t: (key: string) => string) {
+  if (gender === "M") return t("men");
+  if (gender === "W") return t("women");
   return gender || "—";
 }
 
 function splitTags(value: string) {
   return value.split(/[;,]/).map((tag) => tag.trim()).filter(Boolean);
+}
+
+function displayEvent(athlete: Athlete) {
+  if (athlete.pbEvent && athlete.pbYear && !athlete.pbEvent.includes(athlete.pbYear)) return `${athlete.pbEvent} ${athlete.pbYear}`;
+  if (athlete.pbEvent) return athlete.pbEvent;
+  if (athlete.pbYear) return `PB year ${athlete.pbYear}`;
+  return "—";
 }
 
 function normalizeRow(input: Record<string, unknown>, index: number): Athlete {
@@ -138,6 +237,9 @@ function normalizeRow(input: Record<string, unknown>, index: number): Athlete {
   const profileUrl = pick(row, ["profile_url", "world_athletics", "world_athletics_profile", "profile"]);
   const sourceUrl = pick(row, ["source_url", "source"]);
   const worldAthleticsProfile = profileUrl || (sourceUrl.includes("worldathletics.org/athletes/") ? sourceUrl : "");
+  const birthYear = pick(row, ["birth_year", "born"]);
+  const legacyYear = pick(row, ["year"]);
+  const pbYear = pick(row, ["pb_year", "personal_best_year", "personal_best_record_year", "record_year"]);
 
   return {
     id: `${name || "athlete"}-${index}`,
@@ -145,14 +247,16 @@ function normalizeRow(input: Record<string, unknown>, index: number): Athlete {
     name,
     country,
     countryCode,
-    year: pick(row, ["year", "birth_year", "born"]),
+    birthYear: birthYear || (pick(row, ["date_of_birth", "birth_date", "dob"]) ? legacyYear : ""),
     birthDate: pick(row, ["date_of_birth", "birth_date", "dob"]),
     gender: normalizeGender(pick(row, ["gender", "sex"])),
     distance,
     distanceColorClass: distanceColorClass(distance),
     pb,
     pbSeconds: parseTimeToSeconds(pb),
-    event: pick(row, ["personal_best_city_year", "pb_city_year", "personal_best_event", "event", "city_year"]),
+    pbEvent: pick(row, ["personal_best_event", "personal_best_city_year", "pb_city_year", "event", "city_year"]),
+    pbYear: pbYear || (!birthYear && !pick(row, ["date_of_birth", "birth_date", "dob"]) ? legacyYear : ""),
+    category: pick(row, ["category", "field", "group", "level"]),
     highlight: pick(row, ["highlight", "note"]),
     instagram: pick(row, ["instagram", "ig"]),
     bio: pick(row, ["bio", "biography"]),
@@ -175,18 +279,7 @@ function useOutsideClick<T extends HTMLElement>(onClose: () => void) {
 }
 
 function LogoMark() {
-  return (
-    <img
-      className="rrm-logo-img"
-      src="/logo.svg"
-      alt="Rimi Riga Marathon"
-      loading="eager"
-      decoding="async"
-      onError={(event) => {
-        event.currentTarget.src = "https://rimirigamarathon.com/wp-content/uploads/2024/01/rrm-logo-white.svg";
-      }}
-    />
-  );
+  return <img className="rrm-logo-img" src={RRM_LOGO_URL} alt="Rimi Riga Marathon" loading="eager" decoding="async" />;
 }
 
 function CustomSelect({ label, value, options, onChange }: { label: string; value: string; options: Option[]; onChange: (value: string) => void }) {
@@ -235,7 +328,7 @@ function CountryLine({ athlete }: { athlete: Athlete }) {
   return <>{flag ? `${flag} ` : ""}{athlete.country || "—"}</>;
 }
 
-function ProfileModal({ athlete, onClose, hasBibNumbers }: { athlete: Athlete; onClose: () => void; hasBibNumbers: boolean }) {
+function ProfileModal({ athlete, onClose, hasBibNumbers, t }: { athlete: Athlete; onClose: () => void; hasBibNumbers: boolean; t: (key: string) => string }) {
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") onClose();
@@ -247,21 +340,21 @@ function ProfileModal({ athlete, onClose, hasBibNumbers }: { athlete: Athlete; o
   return (
     <div className="modal-layer" onMouseDown={onClose}>
       <div className="profile-modal" role="dialog" aria-modal="true" onMouseDown={(event) => event.stopPropagation()}>
-        <button className="modal-close" type="button" onClick={onClose} aria-label="Close profile">×</button>
+        <button className="modal-close" type="button" onClick={onClose} aria-label={t("closeProfile")}>×</button>
         <div className="profile-head">
           <AthleteInitials athlete={athlete} />
           <div>
-            <p className="profile-kicker">{hasBibNumbers && athlete.bib ? `BIB ${athlete.bib} · ` : ""}{athlete.distance}</p>
+            <p className="profile-kicker">{hasBibNumbers && athlete.bib ? `${t("bib")} ${athlete.bib} · ` : ""}{athlete.distance}</p>
             <h2>{athlete.name}</h2>
-            <p className="profile-country"><CountryLine athlete={athlete} /> · {genderLabel(athlete.gender)}</p>
+            <p className="profile-country"><CountryLine athlete={athlete} /> · {genderLabel(athlete.gender, t)}{athlete.category ? ` · ${athlete.category}` : ""}</p>
           </div>
         </div>
 
         <div className="profile-grid">
-          <div><span>Personal best</span><strong>{athlete.pb || "—"}</strong></div>
-          <div><span>PB event</span><strong>{athlete.event || "—"}</strong></div>
-          <div><span>Year</span><strong>{athlete.year || "—"}</strong></div>
-          <div><span>Date of birth</span><strong>{athlete.birthDate || "—"}</strong></div>
+          <div><span>{t("pb")}</span><strong>{athlete.pb || "—"}</strong></div>
+          <div><span>{t("pbEvent")}</span><strong>{displayEvent(athlete)}</strong></div>
+          <div><span>{t("field")}</span><strong>{athlete.category || "—"}</strong></div>
+          <div><span>{athlete.birthDate ? t("dateOfBirth") : t("birthYear")}</span><strong>{athlete.birthDate || athlete.birthYear || "—"}</strong></div>
         </div>
 
         {(athlete.highlight || athlete.bio) && (
@@ -272,15 +365,15 @@ function ProfileModal({ athlete, onClose, hasBibNumbers }: { athlete: Athlete; o
         )}
 
         {athlete.tags.length > 0 && (
-          <div className="tags" aria-label="Athlete tags">
+          <div className="tags" aria-label={t("tags")}>
             {athlete.tags.map((tag) => <span className="tag-pill" key={tag}>{tag}</span>)}
           </div>
         )}
 
         {(athlete.profileUrl || athlete.instagram) && (
           <div className="profile-links">
-            {athlete.profileUrl && <a href={athlete.profileUrl} target="_blank" rel="noreferrer">World Athletics profile</a>}
-            {athlete.instagram && <a href={athlete.instagram} target="_blank" rel="noreferrer">Instagram</a>}
+            {athlete.profileUrl && <a href={athlete.profileUrl} target="_blank" rel="noreferrer">{t("worldAthletics")}</a>}
+            {athlete.instagram && <a href={athlete.instagram} target="_blank" rel="noreferrer">{t("instagram")}</a>}
           </div>
         )}
       </div>
@@ -289,6 +382,8 @@ function ProfileModal({ athlete, onClose, hasBibNumbers }: { athlete: Athlete; o
 }
 
 function App() {
+  const lang = useLang();
+  const t = tFactory(lang);
   const [athletes, setAthletes] = useState<Athlete[]>([]);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
@@ -296,7 +391,8 @@ function App() {
   const [distance, setDistance] = useState("all");
   const [gender, setGender] = useState("all");
   const [country, setCountry] = useState("all");
-  const [sort, setSort] = useState<SortKey>("pb");
+  const [category, setCategory] = useState("all");
+  const [sort, setSort] = useState<SortKey>("distance_pb");
   const [selected, setSelected] = useState<Athlete | null>(null);
 
   const hasBibNumbers = athletes.some((athlete) => athlete.bib.trim() !== "");
@@ -355,34 +451,40 @@ function App() {
       window.removeEventListener("resize", sendHeight);
       window.clearTimeout(timer);
     };
-  }, [athletes.length, selected, loading, query, distance, gender, country, sort]);
+  }, [athletes.length, selected, loading, query, distance, gender, country, category, sort]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
     return athletes
       .filter((athlete) => {
-        const searchable = [athlete.name, athlete.country, athlete.countryCode, athlete.pb, athlete.event, athlete.distance, athlete.gender, athlete.year].join(" ").toLowerCase();
+        const searchable = [athlete.name, athlete.country, athlete.countryCode, athlete.pb, displayEvent(athlete), athlete.distance, athlete.gender, athlete.birthYear, athlete.category, ...athlete.tags].join(" ").toLowerCase();
         return (!q || searchable.includes(q)) &&
           (distance === "all" || athlete.distance === distance) &&
           (gender === "all" || athlete.gender === gender) &&
-          (country === "all" || athlete.country === country);
+          (country === "all" || athlete.country === country) &&
+          (category === "all" || athlete.category === category);
       })
       .sort((a, b) => {
         if (sort === "name") return a.name.localeCompare(b.name);
-        if (sort === "country") return a.country.localeCompare(b.country) || a.pbSeconds - b.pbSeconds;
+        if (sort === "country") return a.country.localeCompare(b.country) || distanceOrder(a.distance) - distanceOrder(b.distance) || a.pbSeconds - b.pbSeconds;
+        if (sort === "category") return a.category.localeCompare(b.category) || distanceOrder(a.distance) - distanceOrder(b.distance) || a.pbSeconds - b.pbSeconds;
         if (sort === "bib") return Number(a.bib || 999999) - Number(b.bib || 999999);
-        return a.pbSeconds - b.pbSeconds || a.name.localeCompare(b.name);
+        if (sort === "pb") return a.pbSeconds - b.pbSeconds || a.name.localeCompare(b.name);
+        return distanceOrder(a.distance) - distanceOrder(b.distance) || a.pbSeconds - b.pbSeconds || a.name.localeCompare(b.name);
       });
-  }, [athletes, query, distance, gender, country, sort]);
+  }, [athletes, query, distance, gender, country, category, sort]);
 
-  const distances: Option[] = [{ value: "all", label: "All distances" }, ...Array.from(new Set(athletes.map((a) => a.distance))).filter(Boolean).map((item) => ({ value: item, label: item }))];
-  const genders: Option[] = [{ value: "all", label: "All" }, ...Array.from(new Set(athletes.map((a) => a.gender))).filter(Boolean).map((item) => ({ value: item, label: genderLabel(item) }))];
-  const countries: Option[] = [{ value: "all", label: "All countries" }, ...Array.from(new Set(athletes.map((a) => a.country))).filter(Boolean).sort().map((item) => ({ value: item, label: item }))];
+  const distances: Option[] = [{ value: "all", label: t("allDistances") }, ...Array.from(new Set(athletes.map((a) => a.distance))).filter(Boolean).sort((a,b) => distanceOrder(a) - distanceOrder(b)).map((item) => ({ value: item, label: item }))];
+  const genders: Option[] = [{ value: "all", label: t("allGenders") }, ...Array.from(new Set(athletes.map((a) => a.gender))).filter(Boolean).map((item) => ({ value: item, label: genderLabel(item, t) }))];
+  const countries: Option[] = [{ value: "all", label: t("allCountries") }, ...Array.from(new Set(athletes.map((a) => a.country))).filter(Boolean).sort().map((item) => ({ value: item, label: item }))];
+  const categories: Option[] = [{ value: "all", label: t("allCategories") }, ...Array.from(new Set(athletes.map((a) => a.category))).filter(Boolean).sort().map((item) => ({ value: item, label: item }))];
   const sortOptions: Option[] = [
-    { value: "pb", label: "Fastest PB" },
-    { value: "name", label: "Name" },
-    { value: "country", label: "Country" },
-    ...(hasBibNumbers ? [{ value: "bib", label: "BIB" }] : [])
+    { value: "distance_pb", label: t("distancePb") },
+    { value: "pb", label: t("fastestPb") },
+    { value: "name", label: t("name") },
+    { value: "country", label: t("country") },
+    { value: "category", label: t("field") },
+    ...(hasBibNumbers ? [{ value: "bib", label: t("bib") }] : [])
   ];
 
   return (
@@ -398,63 +500,55 @@ function App() {
         <section className="toolbar" aria-label="Elite runner filters">
           <div className="search-wrap">
             <Search className="search-icon" size={18} />
-            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search athlete, country, PB…" />
+            <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder={t("search")} />
           </div>
           <div className="filters">
-            <CustomSelect label="Distance" value={distance} options={distances} onChange={setDistance} />
-            <CustomSelect label="Gender" value={gender} options={genders} onChange={setGender} />
-            <CustomSelect label="Country" value={country} options={countries} onChange={setCountry} />
-            <CustomSelect label="Sort" value={sort} options={sortOptions} onChange={(value) => setSort(value as SortKey)} />
+            <CustomSelect label={t("distance")} value={distance} options={distances} onChange={setDistance} />
+            <CustomSelect label={t("gender")} value={gender} options={genders} onChange={setGender} />
+            <CustomSelect label={t("country")} value={country} options={countries} onChange={setCountry} />
+            <CustomSelect label={t("sort")} value={sort} options={sortOptions} onChange={(value) => setSort(value as SortKey)} />
+          </div>
+          <div className="category-row">
+            <CustomSelect label={t("category")} value={category} options={categories} onChange={setCategory} />
           </div>
         </section>
 
         <div className="list-head">
-          <span>{loading ? "Loading athletes…" : `Showing ${filtered.length} of ${athletes.length} athletes`}</span>
-          <button type="button" onClick={() => void loadData(true)}><RefreshCw size={13} /> Refresh data</button>
+          <span>{loading ? t("loading") : `${t("showing")} ${filtered.length} ${t("of")} ${athletes.length} ${t("athletes")}`}</span>
+          <button type="button" onClick={() => void loadData(true)}><RefreshCw size={13} /> {t("refresh")}</button>
         </div>
         {error && <p className="error">{error}</p>}
 
         <div className="desktop-view">
-          <div className="table-shell">
-            <table className={`elite-table ${hasBibNumbers ? "has-bib" : "no-bib"}`}>
-              <thead>
-                <tr>
-                  {hasBibNumbers && <th className="col-bib">BIB</th>}
-                  <th className="col-athlete">Athlete</th>
-                  <th className="col-pb">Personal best</th>
-                  <th className="col-race">Race</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((athlete) => (
-                  <tr key={athlete.id} onClick={() => setSelected(athlete)}>
-                    {hasBibNumbers && <td className="bib-cell">{athlete.bib || "—"}</td>}
-                    <td>
-                      <div className="athlete-cell">
-                        <div className="name-cell">{athlete.name}</div>
-                        <div className="athlete-country"><CountryLine athlete={athlete} /></div>
-                        <div className="table-meta">
-                          <span className="table-chip">{genderLabel(athlete.gender)}</span>
-                          <span className="table-chip">Born {athlete.year || "—"}</span>
-                        </div>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="pb-cell">
-                        <strong className="pb-time">{athlete.pb || "—"}</strong>
-                        <span className="pb-event">{athlete.event || "—"}</span>
-                      </div>
-                    </td>
-                    <td>
-                      <div className="race-cell">
-                        <span className={`distance-pill ${athlete.distanceColorClass}`}>{athlete.distance}</span>
-                        <span className="profile-cue">Profile →</span>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className={`runner-table ${hasBibNumbers ? "has-bib" : "no-bib"}`}>
+            <div className="runner-head" role="row">
+              {hasBibNumbers && <span>{t("bib")}</span>}
+              <span>{t("athlete")}</span>
+              <span>{t("pb")}</span>
+              <span>{t("race")}</span>
+            </div>
+            {filtered.map((athlete) => (
+              <button type="button" className="runner-row" key={athlete.id} onClick={() => setSelected(athlete)}>
+                {hasBibNumbers && <span className="bib-cell">{athlete.bib || "—"}</span>}
+                <span className="athlete-cell">
+                  <span className="name-cell">{athlete.name}</span>
+                  <span className="athlete-country"><CountryLine athlete={athlete} /></span>
+                  <span className="table-meta">
+                    <span className="table-chip">{genderLabel(athlete.gender, t)}</span>
+                    {athlete.category && <span className="table-chip">{athlete.category}</span>}
+                    {athlete.birthYear && <span className="table-chip">{t("born")} {athlete.birthYear}</span>}
+                  </span>
+                </span>
+                <span className="pb-cell">
+                  <strong className="pb-time">{athlete.pb || "—"}</strong>
+                  <span className="pb-event">{displayEvent(athlete)}</span>
+                </span>
+                <span className="race-cell">
+                  <span className={`distance-pill ${athlete.distanceColorClass}`}>{athlete.distance}</span>
+                  <span className="profile-cue">{t("viewProfile")}</span>
+                </span>
+              </button>
+            ))}
           </div>
         </div>
 
@@ -462,30 +556,31 @@ function App() {
           {filtered.map((athlete) => (
             <button type="button" key={athlete.id} className="mobile-card" onClick={() => setSelected(athlete)}>
               <div className="mobile-card-top">
-                {hasBibNumbers && <span className="mobile-bib">BIB {athlete.bib || "—"}</span>}
+                {hasBibNumbers && <span className="mobile-bib">{t("bib")} {athlete.bib || "—"}</span>}
+                {athlete.category && <span className="mobile-category">{athlete.category}</span>}
                 <span className={`distance-pill ${athlete.distanceColorClass}`}>{athlete.distance}</span>
               </div>
               <div className="mobile-athlete-line">
                 <AthleteInitials athlete={athlete} />
                 <div>
                   <h3>{athlete.name}</h3>
-                  <p><CountryLine athlete={athlete} /> · {genderLabel(athlete.gender)} · {athlete.year || "—"}</p>
+                  <p><CountryLine athlete={athlete} /> · {genderLabel(athlete.gender, t)}</p>
                 </div>
               </div>
               <div className="mobile-pb-box">
-                <span>Personal Best</span>
+                <span>{t("pb")}</span>
                 <strong>{athlete.pb || "—"}</strong>
-                <small>{athlete.event || "—"}</small>
+                <small>{displayEvent(athlete)}</small>
               </div>
-              <div className="tap-hint">Tap to view profile →</div>
+              <div className="tap-hint">{t("tap")}</div>
             </button>
           ))}
         </div>
 
-        {!loading && filtered.length === 0 && <p className="empty">No athletes match the selected filters.</p>}
+        {!loading && filtered.length === 0 && <p className="empty">{t("noMatches")}</p>}
       </main>
 
-      {selected && <ProfileModal athlete={selected} hasBibNumbers={hasBibNumbers} onClose={() => setSelected(null)} />}
+      {selected && <ProfileModal athlete={selected} hasBibNumbers={hasBibNumbers} t={t} onClose={() => setSelected(null)} />}
     </>
   );
 }
